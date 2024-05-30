@@ -5,71 +5,97 @@
 {% block content %}
 
 
-    <body>
+<body>
 
-        <div class="container bg-light shadow-md p-5 form-layout">
+    <div class="container bg-light shadow-md p-5 form-layout">
 
-            <h3> Create record </h3>
+        <h3> Create record </h3>
 
-            <h6> Start adding in the required details for your record. </h6>
+        <h6> Start adding in the required details for your record. </h6>
 
-            <hr>
-            <br>
-
-            <form method="POST" autocomplete="off">
-
-                {% csrf_token %}
-
-                {{form.first_name|as_crispy_field}}
-
-                <br>
-
-                {{form.last_name|as_crispy_field}}
-
-                <br>
-                {{form.email|as_crispy_field}}
-
-                <br>
-                {{form.phone|as_crispy_field}}
-
-                <br>
-                {{form.address|as_crispy_field}}
-
-                <br>
-                {{form.city|as_crispy_field}}
-
-                <br>
-                {{form.province|as_crispy_field}}
-
-                <br>
-                {{form.country|as_crispy_field}}
-
-                <br>
-
-                {% comment %} {{form.password|as_crispy_field}}
-
-                <br> {% endcomment %}
-
-                <button type="submit" class="btn btn-primary ">
-                     Create record 
-                     &nbsp; <i class="fa fa-check" aria-hidden="true"></i> 
-                </button>
-
-                &nbsp;
-
-                <a href="{% url 'dashboard' %}" class="btn btn-secondary">
-
-                    Return &nbsp; <i class="fa fa-arrow-left" aria-hidden="true"></i>
-
-                </a>
-
-
-            </form>
-
-        </div>
-
+        <hr>
         <br>
 
-    </body>
+        <form method="POST" autocomplete="off" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" placeholder="Enter your first name"
+                    class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" placeholder="Enter your last name"
+                    class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input type="text" id="phone" name="phone" placeholder="Enter your phone number" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address" placeholder="Enter your address" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" placeholder="Enter your city" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="province">State</label>
+                <input type="text" id="province" name="province" placeholder="Enter your province" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country</label>
+                <input type="text" id="country" name="country" placeholder="Enter your country" class="form-control">
+            </div>
+
+
+            <div class="form-group my-2">
+                <label for="introduction" class="form-label">Introduction</label>
+                <textarea class="form-control" id="introduction" name="introduction" rows="3"></textarea>
+              </div>
+
+
+            <div class="form-group" style="margin: 10px 0;">
+                <label for="image">Image</label> <br>
+                <input type="file" id="image" name="image" accept="image/*" class="form-control-file">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Create Record
+                <i class="fa fa-check" aria-hidden="true"></i>
+            </button>
+
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                Return
+                <i class="fa fa-arrow-left" aria-hidden="true"></i>
+            </a>
+        </form>
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    </div>
+
+    <br>
+
+
+</body>
 
 {% endblock %}

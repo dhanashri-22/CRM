@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import CreateUserForm, LoginForm, CreateRecordForm, UpdateRecordForm
 
 from django.contrib.auth.models import auth
@@ -102,53 +102,67 @@ def dashboard(request):
     return render(request, 'webapp/dashboard.html', context=context)
 
 
-#  - Create a record
-
-@login_required(login_url='my-login')
+#  - Create a record@login_required(login_url='my-login')
 def create_record(request):
-    form = CreateRecordForm()
-
     if request.method == "POST":
-
-        form = CreateRecordForm(request.POST)
-
-        if form.is_valid():
-
-            form.save()
-
-            messages.success(request, "Your record was created!")
-
-
-            return redirect("dashboard")
-    
-    context = {'form':form}
-
-    return render(request, 'webapp/create-record.html', context=context)
-
-
-
+        # Extract form data from the request
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+        city = request.POST.get('city')
+        province = request.POST.get('province')
+        country = request.POST.get('country')
+        image = request.FILES.get('image')  # Get the uploaded image file
+        introduction = request.POST.get('introduction')
+        
+        # Validate image file type
+        if image:
+            valid_image_extensions = ['png', 'jpeg', 'jpg', 'webp']
+            image_extension = image.name.split('.')[-1].lower()
+            if image_extension not in valid_image_extensions:
+                messages.error(request, "Invalid image format. Please upload a PNG, JPEG, JPG, or WEBP file.")
+                return render(request, 'webapp/create-record.html')
+        
+        # Create a new Record object with the extracted data
+        new_record = Record(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            phone=phone,
+            address=address,
+            city=city,
+            province=province,
+            country=country,
+            image=image,
+            introduction=introduction
+        )
+        
+        # Save the new record object to the database
+        new_record.save()
+        
+        messages.success(request, "Your record was created!")
+        return redirect("dashboard")  # Redirect to the dashboard or any other page
+    else:
+        # This is for GET requests, i.e., when the user accesses the create_record page
+        return render(request, 'webapp/create-record.html')
 
 # update a record
 @login_required(login_url='my-login')
 def update_record(request, pk):
-
-    record = Record.objects.get(id=pk)
-
-    form = UpdateRecordForm(instance=record)
-
+    record = get_object_or_404(Record, id=pk)
+    
     if request.method == 'POST':
-
-        form = UpdateRecordForm(request.POST, instance=record)
-
+        form = UpdateRecordForm(request.POST, request.FILES, instance=record)
         if form.is_valid():
             form.save()
-
-            messages.success(request, "Your record was updated!")
-
-            return redirect("dashboard")
-        
-    context = {'form':form}
-
+            # Optionally add a success message here
+            return redirect('dashboard')
+    else:
+        form = UpdateRecordForm(instance=record)
+    
+    context = {'form': form}
     return render(request, 'webapp/update-record.html', context=context)
 
 #  - Read / View a singular record
@@ -187,3 +201,10 @@ def user_logout(request):
     messages.success(request, "Logout successfully!")
 
     return redirect('my-login')
+
+@login_required(login_url='my-login')
+def search_records(request):
+    query = request.GET.get('q')
+    records = Record.objects.filter(first_name=query) | Record.objects.filter(last_name=query) | Record.objects.filter(city=query)
+    context = {'records': records}
+    return render(request, 'webapp/dashboard.html', context=context)

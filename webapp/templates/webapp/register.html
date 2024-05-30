@@ -46,6 +46,33 @@
 
         <br>
 
+        <script>
+            document.getElementById('registerForm').addEventListener('submit', function(event) {
+                var username = document.getElementById('id_username').value;
+                var password1 = document.getElementById('id_password1').value;
+                var password2 = document.getElementById('id_password2').value;
+                var message = document.getElementById('message');
+        
+                // Regular expression for username validation (only lowercase letters)
+                var usernamePattern = /^[a-z]+$/;
+                // Regular expression for password validation
+                var passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,8}$/;
+        
+                if (!usernamePattern.test(username)) {
+                    message.textContent = 'Username must contain only lowercase alphabet characters.';
+                    event.preventDefault();
+                } else if (!passwordPattern.test(password1)) {
+                    message.textContent = 'Password must be 6 to 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one symbol.';
+                    event.preventDefault();
+                } else if (password1 !== password2) {
+                    message.textContent = 'Passwords do not match.';
+                    event.preventDefault();
+                } else {
+                    message.textContent = '';
+                }
+            });
+        </script>
+
     </body>
 
 {% endblock %}

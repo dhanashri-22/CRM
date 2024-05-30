@@ -25,13 +25,16 @@ class CreateRecordForm(forms.ModelForm):
     class Meta:
 
         model = Record
-        fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'province', 'country']
+        fields = ['first_name', 'last_name', 'email', 'phone', 'image', 'address', 'city', 'province', 'country', 'introduction']
+        widgets = {
+            'image_field': forms.ClearableFileInput(attrs={'accept': 'image/jpeg,image/jpg,image/png,image/webp'}),  # Customize the file input for images
+        }
 
 # update a record
 class UpdateRecordForm(forms.ModelForm):
     class Meta:
 
         model = Record
-        fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'province', 'country']
+        fields = ['first_name', 'last_name', 'email', 'phone', 'address', 'city', 'province', 'country', 'image', 'introduction']
 
 

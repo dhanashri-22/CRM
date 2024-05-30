@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -24,5 +26,9 @@ urlpatterns = [
     path('record/<int:pk>', views.singular_record, name="record"),
 
     path('datete-record/<int:pk>', views.delete_record,name="delete-record"),
+    
+    path('search', views.search_records, name='search-records'),
 
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

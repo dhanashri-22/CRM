@@ -21,6 +21,11 @@ class Record(models.Model):
 
     country = models.CharField(max_length=125)
 
+    image = models.ImageField(upload_to='record_images/', null=True, blank=True)
+
+    introduction = models.TextField(null=True, blank=True)
+    
+
     def __str__(self):
 
         return self.first_name+ "   "+ self.last_name
